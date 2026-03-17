@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parañaque Transparency Portal</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* TOP GOV BAR */
+.topbar {
+    background: #efefef;
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+/* NAV MENU */
+.navbar {
+    background: #ffffff;
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.navbar button {
+    border: none;
+    background: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* GREEN HEADER */
+.header {
+    background: #0b6b1f;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+/* PAGE TITLE */
+.title {
+    text-align: center;
+    margin: 30px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* CONTENT */
+.container {
+    width: 90%;
+    margin: auto;
+}
+
+/* IMAGE (LIKE PDF VIEW) */
+.report-img {
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #999;
+    padding: 8px;
+}
+
+/* BUTTON */
+.btn {
+    padding: 10px;
+    background: #0b6b1f;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* SECTIONS */
+.section {
+    display: none;
+}
+.active {
+    display: block;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    GOVPH
+</div>
+
+<!-- NAVIGATION -->
+<div class="navbar">
+    <button onclick="showSection('home')">HOME</button>
+    <button onclick="showSection('report')">TRANSPARENCY REPORT</button>
+    <button onclick="showSection('analysis')">DATA ANALYSIS</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+    <h2>Republic of the Philippines</h2>
+    <h1>City Government of Parañaque</h1>
+</div>
+
+<!-- TITLE -->
+<div class="title">
+    NATIONAL UTILIZATION OF THE 20% OF THE NATIONAL TAX ALLOTMENT 2025 – 1ST QUARTER
+</div>
+
+<div class="container">
+
+<!-- HOME -->
+<div id="home" class="section active">
+    <h3>Welcome</h3>
+    <p>This is a Budget Transparency Portal Prototype.</p>
+</div>
+
+<!-- REPORT (LIKE IMAGE PDF) -->
+<div id="report" class="section">
+    <h3>Report View</h3>
+
+    <!-- Replace this with your actual image or PDF -->
+    <img src="https://via.placeholder.com/900x600?text=Upload+Your+Budget+Report" class="report-img">
+
+    <br><br>
+    <input type="file" onchange="loadImage(event)">
+</div>
+
+<!-- TABLE DATA -->
+<div>
+    <h3>Editable Budget Table</h3>
+    <button class="btn" onclick="addRow()">Add Data</button>
+
+    <table id="table">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Location</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- ANALYSIS -->
+<div id="analysis" class="section">
+    <h3>Polynomial Data Analysis</h3>
+
+    <textarea id="dataInput">[100,200,300,500]</textarea><br><br>
+    <button class="btn" onclick="analyze()">Analyze</button>
+
+    <p id="result"></p>
+</div>
+
+</div>
+
+<script>
+
+// NAVIGATION
+function showSection(id){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// TABLE DATA
+let data = [
+    {project:"Health Center", location:"BF Homes", cost:5000000}
+];
+
+function display(){
+    let tbody = document.querySelector("#table tbody");
+    tbody.innerHTML="";
+    data.forEach(d=>{
+        tbody.innerHTML += `
+        <tr>
+            <td>${d.project}</td>
+            <td>${d.location}</td>
+            <td>₱${d.cost.toLocaleString()}</td>
+        </tr>`;
+    });
+}
+
+// ADD ROW
+function addRow(){
+    let p = prompt("Project:");
+    let l = prompt("Location:");
+    let c = prompt("Cost:");
+    data.push({project:p, location:l, cost:Number(c)});
+    display();
+}
+
+// IMAGE UPLOAD
+function loadImage(event){
+    let img = document.querySelector(".report-img");
+    img.src = URL.createObjectURL(event.target.files[0]);
+}
+
+// SIMPLE ANALYSIS
+function analyze(){
+    let arr = JSON.parse(document.getElementById("dataInput").value);
+    let avg = arr.reduce((a,b)=>a+b,0)/arr.length;
+    document.getElementById("result").innerText =
+        "Average Budget Trend: " + avg;
+}
+
+display();
+
+</script>
+
+</body>
+</html>
