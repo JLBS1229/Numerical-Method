@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parañaque Budget Transparency</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #34495e;
+    color: white;
+}
+
+canvas {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Parañaque City Budget Transparency Dashboard</h1>
+</header>
+
+<div class="container">
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards">
+        <div class="card">
+            <h3>Total Budget</h3>
+            <p id="totalBudget"></p>
+        </div>
+
+        <div class="card">
+            <h3>Total Expenses</h3>
+            <p id="totalExpenses"></p>
+        </div>
+
+        <div class="card">
+            <h3>Remaining</h3>
+            <p id="remaining"></p>
+        </div>
+    </div>
+
+    <!-- CHART -->
+    <canvas id="budgetChart"></canvas>
+
+    <!-- TABLE -->
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount (₱)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+</div>
+
+<script>
+
+// 🔥 EDIT YOUR DATA HERE
+const budgetData = {
+    totalBudget: 5000000000, // 5 billion example
+    expenses: [
+        { category: "Health Services", amount: 1200000000 },
+        { category: "Education", amount: 1000000000 },
+        { category: "Infrastructure", amount: 1500000000 },
+        { category: "Social Services", amount: 600000000 },
+        { category: "Administration", amount: 400000000 }
+    ]
+};
+
+// FORMAT MONEY
+function formatMoney(num) {
+    return "₱" + num.toLocaleString();
+}
+
+// CALCULATIONS
+let totalExpenses = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
+let remaining = budgetData.totalBudget - totalExpenses;
+
+// DISPLAY CARDS
+document.getElementById("totalBudget").innerText = formatMoney(budgetData.totalBudget);
+document.getElementById("totalExpenses").innerText = formatMoney(totalExpenses);
+document.getElementById("remaining").innerText = formatMoney(remaining);
+
+// TABLE
+const tableBody = document.getElementById("tableBody");
+budgetData.expenses.forEach(item => {
+    let row = `<tr>
+        <td>${item.category}</td>
+        <td>${formatMoney(item.amount)}</td>
+    </tr>`;
+    tableBody.innerHTML += row;
+});
+
+// CHART
+const ctx = document.getElementById("budgetChart").getContext("2d");
+
+new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: budgetData.expenses.map(e => e.category),
+        datasets: [{
+            label: "Expenses",
+            data: budgetData.expenses.map(e => e.amount),
+            backgroundColor: "#3498db"
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+
+</script>
+
+</body>
+</html>
